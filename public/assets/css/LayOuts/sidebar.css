@@ -1,0 +1,423 @@
+@import url("../root.css");
+.sidebar {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  top: 0;
+  z-index: 40;
+  width: 256px;
+  background-color: var(--primary);
+  border-right: 1px solid var(--primary);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background-image: linear-gradient(to top, var(--primary), var(--primary-3));
+}
+
+.sidebar-header {
+  align-items: center;
+}
+
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-dashboard {
+  padding-top: 15px;
+}
+
+.sidebar-logo img {
+  width: 50px;
+  height: 50px;
+}
+
+.sidebar-logo .logo-text {
+  font-size: 25px;
+  text-transform: uppercase;
+  font-weight: 700;
+  opacity: 1;
+  transition: opacity 0.2s ease;
+}
+
+.sidebar-body {
+  flex: 1;
+  padding: 16px 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.sidebar-nav {
+  padding: 0 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.toggle-btn {
+  color: #fff;
+}
+
+.nav-icon,
+.toggle-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+  color: var(--white);
+  font-weight: 500;
+  font-size: 18px;
+}
+
+.nav-link,
+.toggle-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  margin: 2px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #020202;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+.nav-link:hover,
+.toggle-btn:hover,
+.user-profile-dropdown-item:hover {
+  background-color: var(--primary-hover);
+  color: var(--primary);
+}
+.nav-link.active,
+.user-profile-dropdown-item-active {
+  font-weight: 600;
+  color: var(--primary-light);
+  background-color: var(--primary-hover);
+}
+
+.nav-text,
+.toggle-text {
+  opacity: 1;
+  font-size: 15px;
+  transition: opacity 0.2s ease;
+  color: var(--white);
+  font-weight: 600;
+}
+
+.sidebar-footer {
+  padding: 4px;
+  margin-bottom: 8px;
+  border-top: 1px solid #f8fafc;
+}
+
+.sidebar-collapsed {
+  width: 64px;
+}
+
+.sidebar-collapsed .nav-text,
+.sidebar-collapsed .toggle-text,
+.container-logo .logo-text {
+  display: none !important;
+  opacity: 0;
+}
+
+.sidebar-collapsed .nav-link,
+.sidebar-collapsed .toggle-btn {
+  justify-content: center;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* =========================================================================
+   2. KHỐI HEADER CHÍNH (Main Component Layout)
+   ========================================================================= */
+.main-header {
+  height: 60px;
+  padding: 16px;
+  background-color: var(--primary-light);
+  border-bottom: 1px solid var(--primary-3);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-left: 10px;
+  padding-right: 10px;
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  box-sizing: border-box;
+  background-image: linear-gradient(
+    to left,
+    var(--primary),
+    rgba(239, 246, 255, 0.3)
+  );
+}
+
+/* Thanh tìm kiếm hoặc khoảng trống bên trái */
+.main-header .header-left-area {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  max-width: 576px; /* Tương đương max-w-xl */
+}
+
+/* Cụm chức năng bên phải */
+.main-header .header-right-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* =========================================================================
+   3. CÁC PHẦN TỬ CON (Sub-elements & Buttons)
+   ========================================================================= */
+/* Các nút icon chức năng tròn (Thông báo, Cài đặt, Trợ giúp) */
+.main-header .btn-icon-action {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  padding: 0;
+}
+
+.main-header .btn-icon-action:hover {
+  background-color: var(--surface-container-high);
+}
+
+.main-header .btn-icon-action .material-symbols-outlined {
+  color: var(--on-surface-variant);
+}
+
+/* Chấm đỏ thông báo chưa đọc */
+.main-header .btn-icon-action .notification-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 8px;
+  height: 8px;
+  background-color: var(--error);
+  border-radius: 50%;
+  border: 2px solid var(--surface);
+}
+
+/* Thanh phân cách dọc */
+.main-header .vertical-divider {
+  height: 32px;
+  width: 1px;
+  background-color: var(--outline-variant);
+  margin-left: 8px;
+  margin-right: 8px;
+}
+
+.main-header .user-profile-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+}
+
+/* Khối văn bản hiển thị Tên & Vai trò */
+.main-header .user-profile-wrapper .user-info-text {
+  text-align: right;
+  user-select: none;
+}
+
+.main-header .user-profile-wrapper .user-info-text .user-name {
+  font-size: 14px; /* Tương đương font-label-md */
+  font-weight: 500;
+  color: var(--on-surface);
+  margin: 0;
+  line-height: 1;
+}
+
+.main-header .user-profile-wrapper .user-info-text .user-role-sub {
+  font-size: 11px;
+  line-height: 1;
+  margin-top: 4px;
+  margin-bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+}
+
+.main-header
+  .user-profile-wrapper
+  .user-info-text
+  .user-role-sub
+  .text-role-name {
+  color: var(--outline);
+}
+
+.main-header .user-profile-wrapper .user-info-text .user-role-sub .icon-expand {
+  font-size: 13px;
+  color: var(--outline);
+}
+
+/* Ảnh thẻ Avatar đại diện */
+.main-header .user-profile-wrapper .user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid rgba(0, 95, 174, 0.2); /* Mặc định border-primary/20 */
+  object-fit: cover;
+  transition: all 0.2s ease;
+}
+
+/* Hiệu ứng Hover từ nhóm wrapper tác động lên viền ảnh avatar */
+.main-header .user-profile-wrapper:hover .user-avatar {
+  border-color: var(--primary);
+}
+
+/* Menu Dropdown chứa danh sách Switch Role khi Admin hover vào */
+.main-header .user-profile-wrapper .role-dropdown-menu {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  margin-top: 8px;
+  width: 256px;
+  background-color: var(--surface);
+  border: 1px solid var(--outline-variant);
+  border-radius: 12px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  z-index: 50;
+  overflow: hidden;
+  opacity: 0;
+  visibility: hidden;
+  transform-origin: top right;
+  transition: all 0.2s ease;
+}
+
+/* Kích hoạt hiển thị Menu khi Hover vào Group Wrapper */
+.main-header .user-profile-wrapper:hover .role-dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Tiêu đề phần Dropdown */
+.main-header .role-dropdown-menu .dropdown-header {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--outline-variant);
+  background-color: var(--surface-container);
+}
+
+.main-header .role-dropdown-menu .dropdown-header .dropdown-title {
+  margin: 0;
+  font-size: 11px;
+  color: var(--outline);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 500;
+}
+
+.main-header .role-dropdown-menu .dropdown-header .dropdown-subtitle {
+  margin: 2px 0 0 0;
+  font-size: 10px;
+  color: rgba(var(--outline-rgb, 120, 120, 120), 0.7);
+}
+
+/* Dòng nút lựa chọn vai trò */
+.main-header .role-dropdown-menu .btn-role-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  font-size: 14px;
+  border: none;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+  box-sizing: border-box;
+}
+
+.main-header .role-dropdown-menu .btn-role-item .material-symbols-outlined {
+  font-size: 18px;
+}
+
+.main-header .role-dropdown-menu .btn-role-item .icon-checked {
+  font-size: 15px;
+  margin-left: auto;
+}
+
+/* =========================================================================
+   5. CÁC TRẠNG THÁI BIẾN THỂ / ĐẶC BIỆT (Modifiers & Badge States)
+   ========================================================================= */
+/* Trạng thái xem trước (Preview Mode) */
+.main-header .badge-preview-mode {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  background-color: #fef3c7; /* bg-amber-100 */
+  color: #b45309; /* text-amber-700 */
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.main-header .badge-preview-mode .material-symbols-outlined {
+  font-size: 11px;
+}
+
+/* Modifier viền Avatar khi đang ở chế độ xem trước */
+.main-header .user-profile-wrapper .user-avatar.avatar-preview-active {
+  border-color: #fbbf24; /* border-amber-400 */
+}
+
+/* Thao tác hover hoặc active trên dòng chọn vai trò */
+.main-header .role-dropdown-menu .btn-role-item.role-item-normal {
+  color: var(--on-surface);
+}
+
+.main-header .role-dropdown-menu .btn-role-item.role-item-normal:hover {
+  background-color: var(--surface-container-high);
+}
+
+.main-header .role-dropdown-menu .btn-role-item.role-item-active {
+  color: var(--primary);
+  font-weight: 600;
+  background-color: rgba(0, 95, 174, 0.05); /* mờ của màu primary */
+}
+
+/* Hộp bọc nút quay về Admin View dưới đáy */
+.main-header .role-dropdown-menu .dropdown-footer-action {
+  border-top: 1px solid var(--outline-variant);
+}
+
+.main-header .role-dropdown-menu .btn-undo-view {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  background: transparent;
+  color: #b45309; /* text-amber-700 */
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  box-sizing: border-box;
+}
+
+.main-header .role-dropdown-menu .btn-undo-view:hover {
+  background-color: #fef3c7; /* hover:bg-amber-50 */
+}
+
+.main-header .role-dropdown-menu .btn-undo-view .material-symbols-outlined {
+  font-size: 18px;
+}

@@ -1,0 +1,51 @@
+@import url("root.css");
+.status-progress {
+  background: #e4cbbf !important;
+  color: #ea580c;
+}
+.status-examining {
+  background: #ceefff !important;
+  color: #0284c7;
+}
+.status-testing {
+  background: #ffe5d1 !important;
+  color: #b45309;
+}
+.status-pending {
+  background: #fff7e1 !important;
+  color: #e9af10;
+}
+.status-completed {
+  background: #d9fff3 !important;
+  color: #059669;
+}
+.status-cancelled {
+  background: #ffd8d8 !important;
+  color: #dc2626;
+}
+
+#main-content-layout {
+  background: var(--gray-100);
+  visibility: visible;
+}
+.main-content-workspace {
+  padding: 20px;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+/* css chung */
+/* card */
+.card-container {
+  display: flex;
+  width: 100%;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.input-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+}

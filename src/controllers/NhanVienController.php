@@ -4,12 +4,12 @@ require_once __DIR__ . '/../../config/database.php';
 header('Content-Type: application/json; charset=utf-8');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // 0. Kiểm tra ID nhân viên gửi lên xem là Thêm hay Sửa
-    $employee_id   = trim($_POST['employee_id'] ?? '');
+    // SỬA TẠI ĐÂY: Nhận đúng emp_id thay vì employee_id từ form nhan-vien.php gửi lên
+    $employee_id   = trim($_POST['emp_id'] ?? '');
 
     // Thu thập dữ liệu chung từ Form gửi lên
     $username      = trim($_POST['username'] ?? '');
-    $password      = $_POST['password'] ?? ''; // Có thể rỗng nếu ở chế độ Sửa và không muốn đổi mật khẩu
+    $password      = $_POST['password'] ?? '';
     $email         = trim($_POST['email'] ?? '');
     $phone         = trim($_POST['phone'] ?? '');
     $role_id       = $_POST['role_id'] ?? '';
@@ -20,7 +20,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $gender        = $_POST['gender'] ?? 'Nam';
     $address       = trim($_POST['address'] ?? null);
     $qualification = trim($_POST['qualification'] ?? null);
-    $specialty     = trim($_POST['specialty'] ?? null);
+    $specialty_raw = trim($_POST['specialty'] ?? '');
+    $specialty = ($specialty_raw === '' || $specialty_raw === '0') ? null : $specialty_raw;
 
     // Mặc định tên ảnh thẻ ban đầu là null
     $db_image_path = null; 
@@ -53,11 +54,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $old_image_path = $current_emp['AnhThe'];
             $db_image_path = $old_image_path; // Tạm thời giữ ảnh cũ nếu không upload ảnh mới
 
-            // 2. Xử lý tải ảnh thẻ mới (Nếu có file upload lên)
-            if (isset($_FILES['avatar_file']) && $_FILES['avatar_file']['error'] === UPLOAD_ERR_OK) {
-                $fileTmpPath   = $_FILES['avatar_file']['tmp_name'];
-                $fileName      = $_FILES['avatar_file']['name'];
-                $fileSize      = $_FILES['avatar_file']['size'];
+            // SỬA TẠI ĐÂY: Đổi từ avatar_file thành avatar để đồng bộ với thẻ <input type="file" name="avatar">
+            if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] === UPLOAD_ERR_OK) {
+                $fileTmpPath   = $_FILES['avatar']['tmp_name'];
+                $fileName      = $_FILES['avatar']['name'];
+                $fileSize      = $_FILES['avatar']['size'];
                 $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
                 
                 if (in_array($fileExtension, ['jpg', 'jpeg', 'png'])) {
@@ -80,18 +81,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     throw new Exception("Định dạng file ảnh mới không hỗ trợ (Chỉ nhận JPG, JPEG, PNG).");
                 }
             }
-
-            // 3. Cập nhật bảng TAIKHOAN (Kiểm tra xem người dùng có đổi mật khẩu hay không)
-            if (!empty($password)) {
-                // Nếu điền mật khẩu mới -> Tiến hành đổi mật khẩu mã hóa
-                $sql_tk = "UPDATE TAIKHOAN SET MatKhauHash = :password WHERE MaTaiKhoan = :ma_tk";
-                $stmt_tk = $pdo->prepare($sql_tk);
-                $stmt_tk->execute([
-                    ':password' => password_hash($password, PASSWORD_DEFAULT),
-                    ':ma_tk'    => $id_tai_khoan_hien_tai
-                ]);
-            }
-            // (Không cập nhật TenDangNhap vì trường này đã bị đặt readOnly cố định ở giao diện)
 
             // 4. Cập nhật bảng NHANVIEN (Chạy lệnh UPDATE đúng ID nhân viên)
             $sql_nv = "UPDATE NHANVIEN SET 
@@ -140,11 +129,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // ====================================================================
         } else {
             
-            // 1. Xử lý upload file ảnh thẻ khi thêm mới
-            if (isset($_FILES['avatar_file']) && $_FILES['avatar_file']['error'] === UPLOAD_ERR_OK) {
-                $fileTmpPath   = $_FILES['avatar_file']['tmp_name'];
-                $fileName      = $_FILES['avatar_file']['name'];
-                $fileSize      = $_FILES['avatar_file']['size'];
+            // SỬA TẠI ĐÂY: Đổi từ avatar_file thành avatar
+            if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] === UPLOAD_ERR_OK) {
+                $fileTmpPath   = $_FILES['avatar']['tmp_name'];
+                $fileName      = $_FILES['avatar']['name'];
+                $fileSize      = $_FILES['avatar']['size'];
                 $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
                 
                 if (in_array($fileExtension, ['jpg', 'jpeg', 'png'])) {
@@ -220,12 +209,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } catch (Exception $e) {
         $pdo->rollBack(); // Hủy toàn bộ thao tác ghi DB nếu dính bất kỳ lỗi gì
         
-        // Nếu là Thêm mới hoặc vừa upload ảnh mới lên mà DB lỗi -> Xóa file tạm vừa upload tránh rác Hosting
-        if (!empty($employee_id)) {
-            if ($is_upload_new_image && $db_image_path && file_exists(__DIR__ . '/../../public/assets/img/' . $db_image_path)) {
-                @unlink(__DIR__ . '/../../public/assets/img/' . $db_image_path);
-            }
-        } else {
+        // Xóa file ảnh tạm vừa tải lên nếu database bị lỗi để tránh rác hosting
+        if ($is_upload_new_image || empty($employee_id)) {
             if ($db_image_path && file_exists(__DIR__ . '/../../public/assets/img/' . $db_image_path)) {
                 @unlink(__DIR__ . '/../../public/assets/img/' . $db_image_path);
             }

@@ -1,0 +1,418 @@
+@import url('../root.css');
+.profile-page-container {
+    max-width: 1152px;
+    margin: 0 auto;
+    width: 100%;
+    padding: 32px 16px;
+    box-sizing: border-box;
+}
+.profile-page-container * {
+    box-sizing: border-box;
+}
+
+/* 2. Khối màn hình chờ tải (Loader) */
+.profile-loader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 0;
+    color: #64748b;
+}
+.profile-loader__spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(59, 130, 246, 0.1);
+    border-left-color: #2563eb;
+    border-radius: 50%;
+    animation: profile-spin 1s linear infinite;
+    margin-bottom: 12px;
+}
+.profile-loader__text {
+    font-size: 14px;
+}
+@keyframes profile-spin {
+    to { transform: rotate(300deg); }
+}
+
+/* 3. Trạng thái ẩn/hiện cấu trúc lớp */
+.profile-content--hidden {
+    display: none !important;
+}
+.btn-profile--hidden {
+    display: none !important;
+}
+
+/* 4. Khối thanh đầu trang Panel điều khiển */
+.profile-header-panel {
+    background: var(--primary-4);
+    border-radius: 12px;
+    border: 1px solid var(--primary-2);
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    background-image: linear-gradient(to right, var(--primary-1), rgba(239, 246, 255, 0.3));
+}
+@media (min-width: 768px) {
+    .profile-header-panel {
+        flex-direction: row;
+        align-items: center;
+    }
+}
+.profile-header-panel__left {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+.profile-avatar-wrapper {
+    position: relative;
+}
+.profile-avatar-wrapper__initial {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    background-color: #2563eb;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 30px;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+    border: 4px solid #ffffff;
+}
+.profile-avatar-wrapper__badge {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background-color: #dbeafe;
+    color: #1d4ed8;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #ffffff;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    cursor: pointer;
+}
+.profile-user-meta__row-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 4px;
+}
+.profile-user-meta__fullname {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--white);
+    margin: 0;
+}
+.profile-status-badge {
+    background-color: #ecfdf5;
+    color: #047857;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 9999px;
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+.profile-status-badge__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #10b981;
+}
+.profile-user-meta__row-sub {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px;
+    color: var(--white);
+    font-size: 14px;
+}
+.profile-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.profile-meta-item strong {
+    color: var(--white);
+}
+.profile-header-panel__actions {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+}
+@media (min-width: 768px) {
+    .profile-header-panel__actions {
+        width: auto;
+    }
+}
+
+/* 5. Khối thiết lập nút bấm hành động (Buttons) */
+.btn-profile {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+.btn-profile:active {
+    transform: scale(0.95);
+}
+.btn-profile--primary {
+    background-color: var(--primary);
+    color: #ffffff;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+.btn-profile--primary:hover { background-color: var(--primary-dark); }
+.btn-profile--secondary {
+    background-color: var(--danger);
+    color: var(--white);
+}
+.btn-profile--secondary:hover { background-color: var(--danger-hover); }
+.btn-profile--success {
+    background-color: var(--success);
+    color: #ffffff;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+.btn-profile--success:hover { background-color: var(--success-hover); }
+.btn-profile--dark {
+    background-color: var(--primary-2);
+    color: #ffffff;
+}
+.btn-profile--dark:hover { background-color: var(--primary-dark); }
+.btn-profile--full {
+    width: 100%;
+}
+
+/* 6. Bố cục dạng Lưới (Grid CSS) */
+.profile-grid-layout {
+    display: grid;
+    grid-template-columns: 1col;
+    gap: 24px;
+}
+@media (min-width: 1024px) {
+    .profile-grid-layout {
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+    }
+    .profile-grid-layout__left-col {
+        grid-column: span 8 / span 8;
+    }
+    .profile-grid-layout__right-col {
+        grid-column: span 4 / span 4;
+    }
+}
+
+/* 7. Khối giao diện thẻ bao (Cards) */
+.profile-card {
+    background-color: var(--primary-light);
+    border-radius: 12px;
+    border: 1px solid var(--primary-4);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    overflow: hidden;
+    margin-bottom: 24px;
+}
+.profile-card__header {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--primary-4);
+    background-color: rgba(248, 250, 252, 0.5);
+}
+.profile-card__title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--black);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* 8. Cụm Form & Ô Nhập liệu (Inputs) */
+.profile-form-body {
+    padding: 24px;
+    display: grid;
+    grid-template-columns: 1col;
+    gap: 24px;
+}
+@media (min-width: 768px) {
+    .profile-form-body {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.form-group--full-width {
+    grid-column: 1 / -1;
+}
+.form-group__label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+.form-group__required {
+    color: #ef4444;
+}
+.form-profile-input {
+    width: 100%;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    font-size: 14px;
+    font-weight: 500;
+    color: #1e293b;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+.form-profile-input:focus {
+    border-color: #2563eb;
+}
+.readonly-state {
+    background-color: #f8fafc;
+    border-color: #e2e8f0;
+    cursor: default;
+}
+.form-profile-input--disabled {
+    background-color: #f1f5f9;
+    border-color: #e2e8f0;
+    color: #64748b;
+    cursor: not-allowed;
+}
+.form-profile-input--highlight {
+    color: #2563eb;
+    font-weight: 600;
+}
+
+/* 9. Phân cụm chọn địa chỉ 2 cấp */
+.address-selector-block {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 1col;
+    gap: 16px;
+    background-color: #f8fafc;
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px dashed #cbd5e1;
+}
+@media (min-width: 768px) {
+    .address-selector-block {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+.form-profile-input--select-layer {
+    background-color: #f1f5f9;
+}
+.form-profile-input--select-layer:disabled {
+    opacity: 0.8;
+}
+
+/* 10. Khối thẻ lâm sàng phụ (Tiền sử / Bệnh nền) */
+.clinical-history-block {
+    display: grid;
+    grid-template-columns: 1col;
+    gap: 24px;
+}
+@media (min-width: 768px) {
+    .clinical-history-block {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+.clinical-card {
+    background-color: #ffffff;
+    padding: 24px;
+    border-radius: 12px;
+    border: 1px solid #f1f5f9;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    border-left: 4px solid #cbd5e1;
+}
+.clinical-card--danger { border-left-color: #ef4444; }
+.clinical-card--info { border-left-color: #2563eb; }
+.clinical-card__title {
+    margin: 0 0 12px 0;
+    font-size: 12px;
+    font-weight: 700;
+    color: #475569;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.clinical-card__textarea {
+    color: #dc2626;
+    font-weight: 500;
+    resize: none;
+}
+.clinical-card__static-info {
+    font-size: 14px;
+    color: #475569;
+    padding: 8px;
+    background-color: #f8fafc;
+    border-radius: 8px;
+    height: 62px;
+    overflow-y: auto;
+    font-weight: 500;
+}
+
+/* 11. Khối Form mật khẩu bên cột phải */
+.password-form-body {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.password-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.password-input-wrapper__field {
+    width: 100%;
+    padding: 8px 40px 8px 12px;
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #1e293b;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+.password-input-wrapper__field:focus {
+    border-color: #2563eb;
+}
+.password-input-wrapper__icon {
+    position: absolute;
+    right: 12px;
+    color: #94a3b8;
+    cursor: pointer;
+    user-select: none;
+    font-size: 20px;
+}
+.password-input-wrapper__icon:hover {
+    color: #475569;
+}
+
+/* 12. Định dạng màu Icon hệ thống */
+.icon-blue { color: #2563eb; }
+.icon-red { color: #ef4444; }

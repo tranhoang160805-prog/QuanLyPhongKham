@@ -1,0 +1,584 @@
+@import url("../root.css");
+
+.ct-grid {
+  display: grid;
+  grid-template-columns: 4fr 8fr;
+  gap: 20px;
+}
+
+/* ==========================================================================
+   2. KHỐI THÔNG TIN HÀNH CHÍNH BỆNH NHÂN (.ct-box-patient)
+   ========================================================================== */
+.ct-box-patient {
+  background-color: var(--primary-light);
+  border: 1px solid var(--gray-200);
+  border-radius: 3px;
+  padding: 20px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+
+  .ct-patient-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    .ct-patient-avatar {
+      width: 64px;
+      height: 64px;
+      background: var(--white);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid var(--primary);
+
+      .material-symbols-outlined {
+        font-size: 36px;
+      }
+    }
+
+    .ct-patient-name {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--primary);
+      margin: 0 0 4px 0;
+    }
+
+    .ct-patient-meta {
+      font-size: 14px;
+      color: var(--gray-500);
+      margin: 0;
+    }
+  }
+
+  .ct-patient-vitals {
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 4px 32px;
+    font-size: 14px;
+
+    .ct-vitals-label {
+      color: var(--gray-500);
+    }
+
+    .ct-vitals-value {
+      font-weight: bold;
+      color: var(--gray-800);
+    }
+  }
+}
+
+/* ==========================================================================
+   3. KHỐI DANH MỤC THUỐC / DỊCH VỤ (.ct-box-medicine)
+   ========================================================================== */
+.ct-box-medicine {
+  background-color: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: 3px;
+  padding: 10px;
+  position: relative;
+
+  .ct-box-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0 0 16px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--gray-800);
+  }
+
+  .ct-search-wrapper {
+    position: relative;
+    margin-bottom: 16px;
+
+    .ct-search-input {
+      width: 100%;
+      height: 40px;
+      padding: 0 40px 0 16px;
+      border-radius: 2px;
+      border: 1px solid var(--gray-200);
+      outline: none;
+      box-sizing: border-box;
+      background-color: var(--white);
+      color: var(--gray-700);
+
+      &:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+      }
+    }
+
+    .ct-search-icon {
+      position: absolute;
+      right: 12px;
+      top: 8px;
+      color: var(--gray-400);
+    }
+  }
+
+  .ct-med-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow-y: auto;
+    padding-right: 4px;
+
+    .ct-loading-text {
+      font-size: 13px;
+      color: var(--gray-500);
+      padding: 16px 0;
+    }
+
+    .ct-med-msg {
+      font-size: 13px;
+      padding: 16px 0;
+    }
+
+    .ct-med-empty-msg {
+      font-size: 13px;
+      color: var(--gray-500);
+      padding: 24px 0;
+    }
+
+    .ct-med-item {
+      padding: 12px;
+      border: 1px solid var(--gray-200);
+      border-radius: 3px;
+      cursor: pointer;
+      background-color: var(--white);
+      transition: background 0.2s;
+
+      .ct-med-item-layout {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+      }
+
+      .ct-med-item-name {
+        margin: 0;
+        font-weight: bold;
+        color: var(--primary);
+      }
+
+      .ct-med-item-chemical {
+        margin: 2px 0;
+        font-size: 12px;
+        color: var(--gray-500);
+      }
+
+      .ct-med-item-stock {
+        margin: 0;
+        font-size: 12px;
+        color: #64748b;
+      }
+
+      .ct-med-item-price {
+        color: var(--gray-700);
+        font-weight: 600;
+      }
+
+      .ct-badge-out-of-stock {
+        font-size: 10px;
+        color: var(--danger);
+        font-weight: bold;
+        border: 1px solid var(--danger);
+        padding: 2px 4px;
+        border-radius: 4px;
+        background-color: var(--danger-light);
+      }
+
+      &:hover:not(.disabled) {
+        background-color: var(--primary-light);
+        border-color: var(--primary);
+      }
+
+      &.disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+        background-color: var(--gray-100);
+        border-color: var(--gray-200);
+      }
+    }
+  }
+
+  #med-pagination {
+    display: none;
+    justify-content: space-between;
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid var(--gray-200);
+
+    &.active-pagination {
+      display: flex;
+    }
+
+    button {
+      background: none;
+      border: none;
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    span {
+      font-size: 12px;
+      color: var(--gray-500);
+    }
+  }
+}
+
+/* ==========================================================================
+   4. KHỐI TẠO ĐƠN THUỐC / CHỈ ĐỊNH (.ct-box-prescription)
+   ========================================================================== */
+.ct-box-prescription {
+  background-color: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: 3px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  .ct-presc-header {
+    padding: 20px;
+    border-bottom: 1px solid var(--gray-200);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--gray-100);
+
+    .ct-box-title {
+      margin: 0;
+    }
+
+    .ct-btn-text-danger {
+      background: none;
+      border: none;
+      color: var(--danger);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      font-weight: 600;
+
+      .material-symbols-outlined {
+        font-size: 18px;
+      }
+
+      &:hover {
+        color: var(--danger-hover);
+      }
+    }
+  }
+
+  .ct-table-responsive {
+    overflow-x: auto;
+    height: 450px;
+
+    .ct-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+
+      .ct-th-name {
+        width: 35%;
+      }
+      .ct-th-qty {
+        width: 15%;
+      }
+      .ct-th-price {
+        width: 15%;
+      }
+      .ct-th-usage {
+        width: 25%;
+      }
+      .ct-th-total {
+        width: 10%;
+      }
+      .ct-th-action {
+        width: 38px;
+      }
+
+      th {
+        background-color: var(--gray-100);
+        padding: 16px;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--gray-500);
+        text-transform: uppercase;
+        border-bottom: 1px solid var(--gray-200);
+      }
+
+      td {
+        padding: 16px;
+        border-bottom: 1px solid var(--gray-200);
+        color: var(--gray-700);
+      }
+
+      tr:hover {
+        background-color: var(--primary-light);
+      }
+
+      .ct-item-table-name {
+        margin: 0;
+        font-weight: bold;
+        color: var(--gray-800);
+      }
+
+      .ct-item-table-type {
+        margin: 2px 0 0 0;
+        font-size: 12px;
+        color: var(--gray-500);
+        font-style: italic;
+      }
+
+      .ct-qty-input-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+      }
+
+      .ct-qty-unit-lbl {
+        font-size: 12px;
+        color: var(--gray-500);
+      }
+
+      .ct-item-table-price {
+        color: var(--gray-500);
+        font-weight: 500;
+      }
+
+      .ct-item-table-total {
+        font-weight: bold;
+        min-width: 100px;
+      }
+
+      .ct-btn-remove-item {
+        color: var(--gray-500);
+        cursor: pointer;
+        font-size: 18px;
+      }
+
+      .ct-input-qty {
+        width: 64px;
+        height: 32px;
+        text-align: center;
+        border: 1px solid var(--gray-300);
+        border-radius: 1.5px;
+        background-color: var(--white);
+        color: var(--gray-700);
+        outline: none;
+
+        &:focus {
+          border-color: var(--primary);
+        }
+      }
+
+      .ct-input-usage {
+        width: 100%;
+        height: 32px;
+        padding: 0 8px;
+        border: 1px solid var(--gray-300);
+        border-radius: 1.5px;
+        box-sizing: border-box;
+        background-color: var(--white);
+        color: var(--gray-700);
+        outline: none;
+
+        &:focus {
+          border-color: var(--primary);
+        }
+      }
+    }
+  }
+
+  .ct-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 96px 0;
+    color: var(--gray-400);
+
+    .material-symbols-outlined {
+      font-size: 48px;
+      color: #cbd5e1;
+      margin-bottom: 8px;
+    }
+
+    p {
+      margin: 0;
+      font-size: 14px;
+      color: #94a3b8;
+    }
+  }
+
+  .ct-box-instruction {
+    padding: 10px;
+    border-top: 1px solid var(--gray-200);
+    background-color: var(--gray-100);
+
+    label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gray-500);
+    }
+
+    .ct-textarea {
+      width: 100%;
+      border: 1px solid var(--gray-200);
+      border-radius: 3px;
+      padding: 12px;
+      resize: none;
+      box-sizing: border-box;
+      margin-top: 8px;
+      background-color: var(--white);
+      color: var(--gray-700);
+      outline: none;
+
+      &:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+      }
+    }
+  }
+}
+
+/* ==========================================================================
+   5. KHỐI TỔNG CHI PHÍ & THAO TÁC FOOTER (.ct-box-footer)
+   ========================================================================== */
+.ct-box-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px;
+  background-color: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: 3px;
+  gap: 16px;
+  margin-top: 20px;
+
+  .ct-footer-left {
+    display: flex;
+    gap: 24px;
+
+    .ct-footer-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: var(--gray-600);
+    }
+
+    .ct-total-price {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--danger);
+    }
+  }
+
+  .ct-footer-actions {
+    display: flex;
+    gap: 12px;
+
+    .ct-btn {
+      padding: 10px 24px;
+      border-radius: 3px;
+      font-weight: bold;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+
+      .material-symbols-outlined {
+        font-size: 20px;
+      }
+    }
+
+    .ct-btn-outline {
+      background: var(--white);
+      border: 1px solid var(--gray-300);
+      color: var(--gray-600);
+
+      &:hover {
+        background-color: var(--gray-100);
+        color: var(--gray-800);
+      }
+    }
+
+    .ct-btn-primary {
+      background-color: var(--primary);
+      border: none;
+      color: var(--white);
+
+      &:hover:not(:disabled) {
+        background-color: var(--primary-hover);
+      }
+
+      &:disabled {
+        background-color: var(--gray-300);
+        color: var(--gray-500);
+        cursor: not-allowed;
+      }
+    }
+  }
+}
+
+/* ==========================================================================
+   6. CÁC TRẠNG THÁI KHÁC & TIỆN ÍCH
+   ========================================================================== */
+.ct-error-badge {
+  background-color: var(--danger-light);
+  color: var(--danger-hover);
+  padding: 20px;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  border: 1px solid var(--danger);
+
+  .material-symbols-outlined {
+    font-size: 32px;
+  }
+
+  h1 {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 0;
+  }
+
+  p {
+    font-size: 13px;
+    margin: 4px 0 0 0;
+    opacity: 0.9;
+  }
+}
+
+.hidden {
+  display: none !important;
+}
+.text-right {
+  text-align: right;
+}
+.text-center {
+  text-align: center;
+}
+.text-error {
+  color: var(--danger);
+}
+.text-primary {
+  color: var(--primary);
+}
+.UI-bold {
+  font-weight: bold;
+}

@@ -1,0 +1,291 @@
+@import url('../root.css');
+.header {
+    background-color: #0284c7;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    height: 70px;
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 999;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.header .container {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 24px;
+    height: 100%;
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+}
+
+.sidebar-header {
+    display: flex;
+    align-items: center;
+}
+
+.sidebar-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+}
+
+.sidebar-logo img {
+    height: 40px;
+    width: auto;
+    object-fit: contain;
+}
+
+.logo-text {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-main);
+    letter-spacing: -0.5px;
+}
+
+/* 1.1 Thanh menu chính ở giữa */
+.link-menu, .link-menu-active {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--white);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    padding: 8px 0;
+    position: relative;
+}
+
+.link-menu:hover {
+    color: var(--black);
+    border-bottom: solid 2px var(--black);
+}
+
+.link-menu-active {
+    color: var(--black);
+    font-weight: 600;
+}
+
+.link-menu-active::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--black);
+    border-radius: 2px;
+}
+
+
+/* Nút Đăng nhập / Thao tác nhanh */
+.btn-submit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--success);
+    color: var(--white);
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 18px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.btn-submit:hover {
+    background-color: var(--success-hover   );
+}
+
+/* =========================================================================
+   2. KHU VỰC KHÓA LỖI HOVER & DROPDOWN MENU TÀI KHOẢN
+   ========================================================================= */
+.user-profile {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.2s ease;
+}
+
+.user-profile:hover {
+    background-color: rgba(0, 0, 0, 0.03);
+}
+
+/* MẸO KHÓA LỖI MẤT HOVER: 
+   Tạo một lớp đệm vô hình phủ kín khoảng trống giữa Nút và Menu đổ xuống.
+*/
+.user-profile::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 100%;
+    height: 12px; /* Phủ kín 12px khoảng cách trống bên dưới */
+    background: transparent;
+    display: none;
+}
+
+.user-profile:hover::after {
+    display: block;
+}
+
+/* Hộp danh mục đổ xuống (Dropdown Menu) */
+.user-profile-dropdown {
+    position: absolute;
+    top: calc(100% + 6px); /* Đẩy sát xuống một chút để thẩm mỹ nhưng đã có lớp đệm gánh */
+    right: 0;
+    width: 250px;
+    background-color: var(--white);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+    padding: 8px 0;
+    display: none; 
+    flex-direction: column;
+    z-index: 1000;
+    animation: slideDown 0.15s ease-out;
+}
+
+/* Kích hoạt hiển thị đồng thời khi hover */
+.user-profile:hover .user-profile-dropdown {
+    display: flex;
+}
+
+/* Xoay nhẹ mũi tên chỉ báo khi mở menu */
+.user-profile:hover .user-profile-arrow-icon {
+    transform: rotate(180deg);
+}
+
+.user-profile-arrow-icon {
+    font-size: 18px !important;
+    color: #64748b;
+    transition: transform 0.2s ease;
+}
+
+/* Header nhỏ bên trong dropdown hiển thị Tên / Mã định danh */
+.user-profile-dropdown-header {
+    padding: 8px 16px 12px 16px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    margin-bottom: 6px;
+}
+
+.user-profile-dropdown-title {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.user-profile-dropdown-subtitle {
+    margin: 2px 0 0 0;
+    font-size: 11px;
+    color: #64748b;
+}
+
+/* Các hàng liên kết chức năng */
+.user-profile-dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #334155;
+    text-decoration: none;
+    transition: all 0.15s ease;
+}
+
+.user-profile-dropdown-item:hover {
+    background-color: var(--primary-light);
+    color: var(--primary);
+}
+
+.user-profile-dropdown-item .material-symbols-outlined {
+    font-size: 20px !important;
+    color: #64748b;
+}
+
+.user-profile-dropdown-item:hover .material-symbols-outlined {
+    color: var(--primary);
+}
+
+/* 2.2 Các trạng thái phân quyền cá nhân màu nền từ root */
+.user-profile-badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 12px;
+    text-transform: uppercase;
+}
+.status-cancelled { background-color: var(--danger-light); color: var(--danger); } /* Admin */
+.status-pending   { background-color: var(--warning-light); color: var(--warning); } /* Bác sĩ */
+.status-examining { background-color: var(--info-light); color: var(--info); } /* Bệnh nhân */
+.status-completed { background-color: #f1f5f9; color: #475569; }
+
+/* 2.3 Chế độ không gian làm việc (Workspace Dashboard) */
+.user-profile-dropdown-item-workspace {
+    background-color: var(--accent-light);
+    color: var(--accent);
+    font-weight: 600;
+}
+
+.user-profile-dropdown-item-workspace .material-symbols-outlined {
+    color: var(--accent);
+}
+
+.user-profile-dropdown-item-workspace:hover {
+    background-color: var(--accent);
+    color: var(--white);
+}
+
+.user-profile-dropdown-item-workspace:hover .material-symbols-outlined {
+    color: var(--white);
+}
+
+/* Thanh gạch phân tách dòng */
+.user-profile-divider {
+    height: 1px;
+    background-color: rgba(0, 0, 0, 0.05);
+    margin: 6px 0;
+}
+
+/* Lối ra đăng xuất */
+.user-profile-dropdown-item-logout {
+    color: var(--danger);
+}
+
+.user-profile-dropdown-item-logout .material-symbols-outlined {
+    color: var(--danger);
+}
+
+.user-profile-dropdown-item-logout:hover {
+    background-color: var(--danger-light);
+    color: var(--danger-hover);
+}
+
+.user-profile-dropdown-item-logout:hover .material-symbols-outlined {
+    color: var(--danger-hover);
+}
+
+/* Hiệu ứng trượt xuống nhẹ nhàng khi xuất hiện */
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

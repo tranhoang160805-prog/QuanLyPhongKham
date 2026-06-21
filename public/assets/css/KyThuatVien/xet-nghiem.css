@@ -1,0 +1,343 @@
+@import url("../root.css");
+.xn-space-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.xn-material-icon {
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+}
+
+/* Alert Boxes */
+.xn-alert-error-container {
+  padding: 16px;
+  background-color: var(--danger-light);
+  color: var(--danger-hover);
+  border-radius: 6px;
+  border: 1px solid var(--danger);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.xn-alert-icon {
+  color: var(--danger);
+}
+.xn-alert-text {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* Patient Summary Section */
+.xn-patient-banner-selected {
+  background-color: var(--primary-light);
+  border-radius: 6px;
+  padding: 24px;
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.08);
+  border: 0.5px solid var(--gray-200); /* 1px / 2 */
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 24px;
+}
+.xn-patient-banner-empty {
+  background-color: var(--gray-100);
+  border-radius: 6px;
+  padding: 24px;
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.08);
+  border: 0.5px solid var(--gray-200); /* 1px / 2 */
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 24px;
+}
+@media (max-width: 768px) {
+  .xn-patient-banner-selected,
+  .xn-patient-banner-empty {
+    flex-direction: column;
+  }
+}
+
+/* Patient Identity Blocks */
+.xn-avatar-wrapper {
+  display: flex;
+  gap: 24px;
+}
+.xn-avatar-circle {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background-color: rgba(2, 132, 199, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  border: 1px solid rgba(2, 132, 199, 0.2); /* 2px / 2 */
+}
+.xn-avatar-circle-empty {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background-color: var(--gray-200);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gray-500);
+}
+.xn-avatar-icon-size {
+  font-size: 32px;
+}
+
+/* Labels and Texts details inside banner */
+.xn-info-block {
+  display: flex;
+  flex-direction: column;
+}
+.xn-info-name-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.xn-patient-fullname-heading {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--gray-800);
+  text-transform: uppercase;
+  margin: 0;
+}
+.xn-heading-empty-status {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--gray-600);
+  margin: 0;
+}
+.xn-badge-info-pill {
+  padding: 2px 8px;
+  background-color: rgba(2, 132, 199, 0.15);
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 2px; /* 4px / 2 */
+}
+.xn-badge-waiting-pill {
+  padding: 2px 8px;
+  background-color: rgba(220, 38, 38, 0.15);
+  color: var(--danger);
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 2px; /* 4px / 2 */
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Patient Info Grid Items */
+.xn-meta-data-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 32px;
+  row-gap: 4px;
+  margin-top: 8px;
+}
+@media (max-width: 768px) {
+  .xn-meta-data-row {
+    grid-template-columns: 1fr;
+  }
+}
+.xn-meta-text-style {
+  font-size: 14px;
+  font-weight: 400;
+  margin: 0;
+}
+.xn-label-dim {
+  color: var(--gray-500);
+}
+.xn-value-bold {
+  font-weight: 700;
+}
+
+/* Doctor Meta section on Right side of Banner */
+.xn-doctor-assignment-sidebar {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-top: none;
+  border-left: 0.5px solid rgba(193, 198, 212, 0.3); /* 1px / 2 */
+  padding-top: 0px;
+  padding-left: 32px;
+  min-width: 300px;
+}
+@media (max-width: 768px) {
+  .xn-doctor-assignment-sidebar {
+    border-left: none;
+    border-top: 0.5px solid rgba(193, 198, 212, 0.3); /* 1px / 2 */
+    padding-left: 0px;
+    padding-top: 16px;
+  }
+}
+.xn-doctor-name-highlight {
+  font-weight: 700;
+  color: var(--primary-dark);
+}
+.xn-diagnose-italic-val {
+  font-style: italic;
+  color: var(--gray-800);
+}
+
+/* Core Data Table & Panels */
+.xn-grid-layout-configuration {
+  display: grid;
+  gap: 20px;
+}
+.xn-col-span-full-width {
+  grid-column: span 8 / span 8;
+}
+@media (max-width: 1200px) {
+  .xn-col-span-full-width {
+    grid-column: span 12 / span 12;
+  }
+}
+
+.xn-panel-card-box {
+  background-color: var(--white);
+  border-radius: 6px; /* 12px / 2 */
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.08);
+  border: 0.5px solid var(--gray-200); /* 1px / 2 */
+  overflow: hidden;
+}
+.xn-panel-header-toolbar {
+  padding: 16px 24px;
+  border-bottom: 0.5px solid var(--gray-200); /* 1px / 2 */
+  background-color: var(--white);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+@media (max-width: 640px) {
+  .xn-panel-header-toolbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+}
+.xn-panel-heading-title {
+  font-size: 20px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+.xn-panel-actions-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Table Design Layouts */
+.xn-table-responsive-container {
+  overflow-x: auto;
+  width: 100%;
+}
+.xn-table-data-standard {
+  width: 100%;
+  text-align: left;
+  border-collapse: collapse;
+}
+.xn-table-thead-theme {
+  background-color: var(--gray-100);
+  color: var(--gray-600);
+}
+.xn-table-th-cell {
+  padding: 12px 24px;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+.xn-table-th-center {
+  text-align: center;
+}
+.xn-table-th-right {
+  text-align: right;
+}
+
+.xn-table-tbody-divide {
+  background-color: var(--white);
+}
+.xn-table-row-interactive {
+  border-bottom: 0.5px solid var(--gray-200); /* 1px / 2 */
+  transition: background-color 0.2s;
+}
+.xn-table-row-interactive:hover {
+  background-color: var(--primary-light);
+}
+
+.xn-table-td-cell {
+  padding: 16px 24px;
+  font-size: 14px;
+  vertical-align: middle;
+}
+.xn-table-td-center {
+  text-align: center;
+}
+.xn-table-td-right {
+  text-align: right;
+}
+
+/* Status Badges inside cell */
+.xn-cell-title-bold {
+  font-weight: 700;
+  color: var(--primary);
+}
+.xn-status-badge-container {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 50px; /* Full rounded represented as standard max px */
+  font-size: 12px;
+  font-weight: 600;
+  background-color: var(--warning-light);
+  color: var(--warning-hover);
+}
+.xn-status-dot-indicator {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--warning-1);
+}
+
+/* Custom Buttons Components */
+.xn-btn-action-core {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: 0.5px solid transparent; /* 1px / 2 */
+  border-radius: 6px; /* 12px / 2 */
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: var(--font);
+}
+.xn-btn-secondary-action {
+  background-color: var(--accent);
+  color: var(--white);
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.05);
+}
+.xn-btn-secondary-action:hover {
+  background-color: #0c8c88;
+}
+.xn-btn-primary-action {
+  background-color: var(--primary);
+  color: var(--white);
+  box-shadow: 0px 4px 6px rgba(2, 132, 199, 0.1);
+}
+.xn-btn-primary-action:hover {
+  background-color: var(--primary-hover);
+}
