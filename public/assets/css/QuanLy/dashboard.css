@@ -267,7 +267,8 @@
 }
 
 .ql-table-wrap {
-  overflow-x: auto;
+  max-height: 400px;
+  overflow-y: auto;
 }
 
 .ql-table {

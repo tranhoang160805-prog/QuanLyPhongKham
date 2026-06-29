@@ -1,0 +1,440 @@
+:root {
+  --surface: #f9f9ff;
+  --on-surface: #151c27;
+  --on-surface-variant: #414752;
+  --primary: #00569f;
+  --primary-fixed: #d4e3ff;
+  --outline-variant: #c1c6d4;
+  --outline: #717783;
+  --error: #ba1a1a;
+  --secondary: #006a66;
+  --surface-container-low: #f0f3ff;
+  --background-alert: #e8f4fd;
+}
+
+/* --- CSS RESET & CƠ BẢN --- */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+body {
+  background-color: var(--surface);
+  color: var(--on-surface);
+  line-height: 1.5;
+}
+main {
+  padding: 1.5rem;
+  min-height: calc(100vh - 60px);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* --- CẬP NHẬT HEADER SECTION --- */
+.header-section {
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: space-between; /* Đẩy chữ sang trái, nút sang phải */
+  align-items: center; /* Căn giữa chữ và nút theo chiều dọc */
+  gap: 1rem; /* Khoảng cách an toàn khi màn hình thu nhỏ */
+}
+
+.header-content h2 {
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.25rem;
+}
+
+/* --- CSS CHO NÚT QUAY LẠI HOME --- */
+.btn-back-home {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  background-color: #fff;
+  border: 1px solid var(--outline-variant);
+  color: var(--on-surface-variant);
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 0.5rem;
+  text-decoration: none; /* Bỏ gạch chân của thẻ a */
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.btn-back-home:hover {
+  background-color: var(--surface-container-low);
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
+/* --- TỐI ƯU RESPONSIVE TRÊN ĐIỆN THOẠI NHỎ --- */
+@media (max-width: 480px) {
+  .header-section {
+    flex-direction: column; /* Chuyển thành hàng dọc trên màn hình quá nhỏ */
+    align-items: flex-start; /* Căn lề trái */
+  }
+  .btn-back-home {
+    width: 100%; /* Nút kéo dài hết màn hình trên điện thoại */
+    justify-content: center;
+  }
+}
+.text-variant {
+  color: var(--on-surface-variant);
+  font-size: 14px;
+}
+
+/* --- TỔNG QUAN BỆNH ÁN (SUMMARY HEADER) --- */
+.summary-header {
+  background-color: var(--background-alert);
+  border: 1px solid rgba(0, 86, 159, 0.2);
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+.summary-title-block {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.summary-icon {
+  width: 3rem;
+  height: 3rem;
+  background-color: rgba(0, 86, 159, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+}
+.summary-title-block h3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--primary);
+}
+.summary-divider {
+  height: 2.5rem;
+  width: 1px;
+  background-color: rgba(0, 86, 159, 0.1);
+}
+.summary-stats {
+  display: flex;
+  gap: 2.5rem;
+  flex-wrap: wrap;
+}
+.stat-label {
+  font-size: 12px;
+  color: var(--on-surface-variant);
+  margin-bottom: 2px;
+}
+.stat-value {
+  font-size: 20px;
+  font-weight: 600;
+}
+.stat-value.primary-color {
+  color: var(--primary);
+}
+
+/* --- TRỤC THỜI GIAN TIMELINE --- */
+.timeline-line {
+  position: relative;
+}
+.timeline-line::before {
+  content: "";
+  position: absolute;
+  left: 20px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background-color: #e2e8f0;
+  z-index: 0;
+}
+.timeline-item {
+  position: relative;
+  padding-left: 3rem;
+  margin-bottom: 1.5rem;
+}
+.timeline-dot {
+  position: absolute;
+  left: 13px;
+  top: 1rem;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 4px solid #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  z-index: 10;
+}
+.timeline-dot.active {
+  background-color: var(--primary);
+}
+.timeline-dot.inactive {
+  background-color: var(--outline-variant);
+}
+
+/* --- THẺ PHIẾU KHÁM (TIMELINE CARD) --- */
+.timeline-card {
+  background-color: #fff;
+  border: 1px solid var(--outline-variant);
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  transition: box-shadow 0.2s ease;
+}
+.timeline-card:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+}
+.card-flex {
+  display: flex;
+  flex-direction: column;
+}
+.card-date-side {
+  background-color: var(--surface-container-low);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.card-date-side .day {
+  color: var(--primary);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1;
+}
+.card-date-side .month {
+  color: var(--on-surface-variant);
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 2px;
+}
+.card-date-side .time {
+  font-size: 12px;
+  color: var(--on-surface-variant);
+  margin-top: 0.5rem;
+}
+.card-body-side {
+  flex: 1;
+  padding: 1.25rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+.doctor-info-block {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.avatar-text {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background-color: var(--primary-fixed);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  font-weight: 700;
+}
+.doctor-name {
+  font-size: 13px;
+  font-weight: 600;
+}
+.doctor-dept {
+  font-size: 12px;
+  color: var(--primary);
+}
+.diagnosis-text {
+  font-size: 14px;
+  font-weight: 500;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.status-badge {
+  display: inline-flex;
+  margin-top: 0.5rem;
+  align-items: center;
+  padding: 0.125rem 0.625rem;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 500;
+  background-color: rgba(0, 106, 102, 0.15);
+  color: var(--secondary);
+}
+.btn-view-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.btn-detail {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.5rem;
+  background-color: #fff;
+  border: 1px solid var(--primary);
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.btn-detail:hover {
+  background-color: var(--primary);
+  color: #fff;
+}
+
+/* --- ĐIỀU CHỈNH GIAO DIỆN MÀN HÌNH LỚN (PC) --- */
+@media (min-width: 768px) {
+  .card-flex {
+    flex-direction: row;
+  }
+  .card-date-side {
+    width: 14rem;
+    border-right: 1px solid var(--outline-variant);
+  }
+  .card-body-side {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .btn-view-container {
+    justify-content: flex-end;
+  }
+  .summary-divider {
+    display: block;
+  }
+}
+@media (max-width: 1023px) {
+  .summary-divider {
+    display: none;
+  }
+}
+
+/* --- MODAL (HỘP THOẠI CHI TIẾT) --- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.modal-overlay.hidden {
+  display: none;
+}
+.modal-content {
+  background-color: #fff;
+  border-radius: 0.75rem;
+  width: 100%;
+  max-width: 42rem;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 1.5rem;
+  position: relative;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+.btn-close-modal {
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+  background: none;
+  border: none;
+  color: var(--outline);
+  cursor: pointer;
+}
+.btn-close-modal:hover {
+  color: var(--on-surface);
+}
+.modal-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--primary);
+  border-b: 1px solid #edf2f7;
+  padding-bottom: 0.75rem;
+  margin-bottom: 1rem;
+}
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  font-size: 14px;
+}
+.modal-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  background-color: var(--surface-container-low);
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+}
+.bold-label {
+  font-size: 12px;
+  color: var(--on-surface-variant);
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+.vitals-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  text-align: center;
+}
+.vital-box {
+  background-color: var(--surface);
+  padding: 0.5rem;
+  border: 1px solid var(--outline-variant);
+  border-radius: 0.25rem;
+}
+.vital-box p:first-child {
+  text-transform: capitalize;
+}
+.diagnosis-box {
+  background-color: rgba(0, 86, 159, 0.05);
+  border: 1px solid rgba(0, 86, 159, 0.2);
+  padding: 1rem;
+  border-radius: 0.5rem;
+}
+.diagnosis-box p:first-child {
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 12px;
+}
+.diagnosis-box p:last-child {
+  font-size: 20px;
+  font-weight: 600;
+  margin-top: 0.25rem;
+}
+.text-notes {
+  font-style: italic;
+  margin-top: 0.25rem;
+}
+
+/* TRẠNG THÁI STATUS TRÊN TRANG */
+.loading-text {
+  text-align: center;
+  padding: 2rem 0;
+  color: var(--on-surface-variant);
+}
+.error-text {
+  text-align: center;
+  padding: 3rem 0;
+  color: var(--error);
+  font-weight: 500;
+}
+.error-text span {
+  display: block;
+  font-size: 48px;
+  margin-bottom: 0.5rem;
+}

@@ -118,15 +118,8 @@ try {
     error_log("Lỗi đếm số liệu thống kê: " . $e->getMessage());
 }
 ?>
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản lý tài khoản người dùng</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..40,100..700,0..1,-50..200" />
-    <link rel="stylesheet" href="public/assets/css/QuanLy/nhan-vien.css">
-</head>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..40,100..700,0..1,-50..200" />
+<link rel="stylesheet" href="public/assets/css/QuanLy/nhan-vien.css">
 <body>
 
 <main class="manager-container">
@@ -159,7 +152,7 @@ try {
                 <?php
                 try {
                     if (isset($pdo)) {
-                        $sqlRoles = "SELECT MaVaiTro, TenVaiTro, MoTa FROM VAITRO WHERE TenVaiTro != 'BENH_NHAN'";
+                        $sqlRoles = "SELECT MaVaiTro, TenVaiTro, MoTa FROM VAITRO WHERE TenVaiTro NOT IN ('BENH_NHAN', 'QUAN_LY')";
                         $stmtRoles = $pdo->query($sqlRoles);
                         while ($role = $stmtRoles->fetch(PDO::FETCH_ASSOC)) {
                             echo '<option value="' . htmlspecialchars($role['MaVaiTro']) . '">' . htmlspecialchars($role['MoTa']) . '</option>';
@@ -320,11 +313,11 @@ try {
                         <div class="form-group">
                             <label>Phân quyền Hệ thống (Vai trò)</label>
                             <select name="role_id" id="emp-role-select" required>
-                                <option value="">-- Chọn vai trò xử lý --</option>
+                                <option value="">-- Chọn vai trò Nhân viên --</option>
                                 <?php
                                 try {
                                     if (isset($pdo)) {
-                                        $stmtRolesModal = $pdo->query("SELECT MaVaiTro, TenVaiTro, MoTa FROM VAITRO WHERE TenVaiTro != 'BENH_NHAN'");
+                                        $stmtRolesModal = $pdo->query("SELECT MaVaiTro, TenVaiTro, MoTa FROM VAITRO WHERE TenVaiTro NOT IN ('BENH_NHAN', 'QUAN_LY')");
                                         while ($r = $stmtRolesModal->fetch(PDO::FETCH_ASSOC)) {
                                             echo '<option value="' . htmlspecialchars($r['MaVaiTro']) . '">' . htmlspecialchars($r['MoTa']) . '</option>';
                                         }
@@ -672,72 +665,81 @@ function resetUserPassword(employeeId) {
 }
 
 // =========================================================================
-// 3. KHỞI CHẠY LẬP TỨC
+// 3. KHỞI CHẠY HỆ THỐNG
 // =========================================================================
-initEmployeePageEvents();
-fetchFilteredEmployees();
-
 document.addEventListener('DOMContentLoaded', function() {
+    // Chỉ khởi tạo sự kiện và load dữ liệu một lần duy nhất khi DOM sẵn sàng
     initEmployeePageEvents();
     fetchFilteredEmployees();
 
     const addEmployeeForm = document.getElementById('form-add-employee');
     if (addEmployeeForm) {
-        // Thay đổi đoạn kiểm tra submit cũ thành đoạn này:
-addEmployeeForm.addEventListener('submit', function(e) {
-    e.preventDefault(); 
+        addEmployeeForm.addEventListener('submit', function(e) {
+            // Ép trình duyệt KHÔNG ĐƯỢC chuyển trang (Chặn action mặc định)
+            e.preventDefault(); 
 
-    const staffId = document.getElementById('emp-id').value;
-    const pass = document.getElementById('emp-password')?.value;
-    const confirmPass = document.getElementById('emp-confirm-password')?.value;
-    
-    // CHỈ BẮT BUỘC KIỂM TRA MẬT KHẨU KHI THÊM MỚI (Mã nhân viên rỗng)
-    if (!staffId) { 
-        if (!pass) {
-            showAlert("Vui lòng nhập mật khẩu khi thêm nhân viên mới!");
-            return;
-        }
-        if (pass !== confirmPass) {
-            showAlert("Lỗi: Nhập lại mật khẩu không trùng khớp!");
-            return;
-        }
-    }
+            const staffId = document.getElementById('emp-id').value;
+            const pass = document.getElementById('emp-password')?.value;
+            const confirmPass = document.getElementById('emp-confirm-password')?.value;
+            
+            // CHỈ BẮT BUỘC KIỂM TRA MẬT KHẨU KHI THÊM MỚI (Mã nhân viên rỗng)
+            if (!staffId) { 
+                if (!pass) {
+                    showAlert("Vui lòng nhập mật khẩu khi thêm nhân viên mới!");
+                    return;
+                }
+                if (pass !== confirmPass) {
+                    showAlert("Lỗi: Nhập lại mật khẩu không trùng khớp!");
+                    return;
+                }
+            }
 
-    const formData = new FormData(this);
+            const formData = new FormData(this);
 
-    fetch('src/controllers/NhanVienController.php', {
-        method: 'POST',
-        body: formData
-    })
-    // ... các đoạn xử lý .then() phía sau giữ nguyên ...
-            .then(response => response.json())
+            // Thực hiện gửi ngầm qua AJAX
+            fetch('src/controllers/NhanVienController.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                // Kiểm tra xem controller có trả về đúng JSON không
+                if (!response.ok) {
+                    throw new Error('Mạng lưới hoặc Controller phản hồi không hợp lệ');
+                }
+                return response.json();
+            })
             .then(data => {
                 if (data.success) {
                     showAlert(data.message);
                     toggleModal('modal-add-employee', false);
-                    this.reset();
-                    fetchFilteredEmployees(); 
+                    addEmployeeForm.reset(); 
+                    fetchFilteredEmployees();
                 } else {
                     showAlert('Thất bại: ' + data.message);
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                showAlert('Có lỗi xảy ra trong quá trình gửi dữ liệu!');
+                showAlert('Có lỗi xảy ra trong quá trình gửi dữ liệu hoặc Controller không trả về JSON hợp lệ!');
             });
         });
     }
 
+    // Xử lý xem trước ảnh thẻ
     const avatarInput = document.getElementById('emp-avatar-input');
     avatarInput?.addEventListener('change', function(e) {
         const file = e.target.files[0];
         if (file) {
             const reader = new FileReader();
-            reader.onload = (e) => document.getElementById('emp-avatar-preview').src = e.target.result;
+            reader.onload = (e) => {
+                const preview = document.getElementById('emp-avatar-preview');
+                if (preview) preview.src = e.target.result;
+            };
             reader.readAsDataURL(file);
         }
     });
 
+    // Đóng modal bằng phím Esc
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
             toggleModal('modal-add-employee', false);

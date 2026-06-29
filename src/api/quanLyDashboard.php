@@ -2,6 +2,7 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+date_default_timezone_set('Asia/Ho_Chi_Minh');
 
 require_once __DIR__ . '/../../config/database.php';
 
@@ -38,18 +39,18 @@ try {
         'patients_total' => (int) ql_scalar($pdo, "SELECT COUNT(*) FROM benhnhan"),
         'staff_active' => (int) ql_scalar($pdo, "SELECT COUNT(*) FROM nhanvien WHERE DangHoatDong = 1"),
         'appointments_today' => (int) ql_scalar($pdo, "SELECT COUNT(*) FROM lichhen WHERE NgayHen = ?", [$today]),
-        'checkups_today' => (int) ql_scalar($pdo, "SELECT COUNT(*) FROM phieukham WHERE NgayKham = ?", [$today]),
+        'checkups_today' => (int) ql_scalar($pdo, "SELECT COUNT(*) FROM phieukham WHERE date(NgayTao) = ?", [$today]),
         'pending_invoices' => (int) ql_scalar($pdo, "SELECT COUNT(*) FROM hoadon WHERE TrangThai IN ('CHO_THANH_TOAN', '0') AND NgayThanhToan IS NULL"),
         'low_stock' => (int) ql_scalar($pdo, "SELECT COUNT(*) FROM thuoc WHERE DangHoatDong = 1 AND SoLuongTon <= TonToiThieu"),
         'expired_medicine' => (int) ql_scalar($pdo, "SELECT COUNT(*) FROM thuoc WHERE DangHoatDong = 1 AND HanSuDung IS NOT NULL AND HanSuDung < CURDATE()"),
-        'cls_waiting' => (int) ql_scalar($pdo, "SELECT COUNT(*) FROM chidinhcls WHERE trangthai = 0"),
-        'revenue_today' => (float) ql_scalar($pdo, "SELECT COALESCE(SUM(SoTien), 0) FROM thanhtoan WHERE DATE(NgayThanhToan) = ?", [$today]),
-        'revenue_month' => (float) ql_scalar($pdo, "SELECT COALESCE(SUM(SoTien), 0) FROM thanhtoan WHERE DATE(NgayThanhToan) BETWEEN ? AND ?", [$monthStart, $monthEnd])
+        'cls_waiting' => (int) ql_scalar($pdo, "SELECT COUNT(*) FROM thuoc WHERE danghoatdong = 1"),
+        'revenue_today' => (float) ql_scalar($pdo, "SELECT COALESCE(SUM(TongThanhToan), 0) FROM hoadon WHERE DATE(NgayThanhToan) = ?", [$today]),
+        'revenue_month' => (float) ql_scalar($pdo, "SELECT COALESCE(SUM(TongThanhToan), 0) FROM hoadon WHERE DATE(NgayThanhToan) BETWEEN ? AND ?", [$monthStart, $monthEnd])
     ];
 
     $stmt = $pdo->prepare("
-        SELECT DATE(NgayThanhToan) AS label, COALESCE(SUM(SoTien), 0) AS value
-        FROM thanhtoan
+        SELECT DATE(NgayThanhToan) AS label, COALESCE(SUM(TongThanhToan), 0) AS value
+        FROM hoadon
         WHERE DATE(NgayThanhToan) >= DATE_SUB(CURDATE(), INTERVAL 6 DAY)
         GROUP BY DATE(NgayThanhToan)
         ORDER BY label ASC

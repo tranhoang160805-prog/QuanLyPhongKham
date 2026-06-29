@@ -22,10 +22,6 @@ function getMaBenhNhan($pdo, $maTaiKhoan) {
 }
 
 switch ($action) {
-    // ========================================================
-    // TÁC VỤ 4: TẠO MỚI LỊCH HẸN (ĐÃ BỎ maChuyenKhoa & maBacSi)
-    // Người dùng chỉ cần nhập vấn đề sức khỏe (ghi_chu)
-    // ========================================================
     case 'create_booking':
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             echo json_encode(['status' => 'error', 'message' => 'Yêu cầu không hợp lệ.']);
@@ -76,9 +72,6 @@ switch ($action) {
         }
         break;
 
-    // ========================================================
-    // TÁC VỤ 5: LẤY DANH SÁCH PHIẾU KHÁM CỦA BỆNH NHÂN
-    // ========================================================
     case 'get_my_phieu_kham':
         $maBenhNhan = getMaBenhNhan($pdo, $maTaiKhoan);
         if ($maBenhNhan <= 0) {

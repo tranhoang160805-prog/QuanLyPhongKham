@@ -18,7 +18,7 @@
     <form class="ql-filter-bar" id="report-filter">
         <label>
             <span>Từ ngày</span>
-            <input type="date" name="start">
+            <input type="date" name="start" >
         </label>
         <label>
             <span>Đến ngày</span>

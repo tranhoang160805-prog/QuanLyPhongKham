@@ -24,7 +24,7 @@ function report_date_or_default($value, $fallback)
 
 try {
     if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
-        report_json(false, null, 'Phuong thuc khong hop le.');
+        report_json(false, null, 'Phương thức không hợp lệ.');
     }
 
     $today = date('Y-m-d');
@@ -40,15 +40,20 @@ try {
     $limit = max(5, min(50, (int) ($_GET['limit'] ?? 10)));
     $offset = ($page - 1) * $limit;
 
-    $where = ["DATE(tt.NgayThanhToan) BETWEEN :start_date AND :end_date"];
+    // Chỉ tính toán doanh thu dựa trên các hóa đơn đã thanh toán thành công
+    $where = [
+        "DATE(hd.NgayThanhToan) BETWEEN :start_date AND :end_date",
+        "hd.TrangThai = '1'"
+    ];
+    
     $params = [
         ':start_date' => $start,
         ':end_date' => $end
     ];
 
     if ($paymentMethod !== '') {
-        $where[] = "tt.MaPhuongThuc = :payment_method";
-        $params[':payment_method'] = (int) $paymentMethod;
+        $where[] = "hd.PhuongThuc = :payment_method";
+        $params[':payment_method'] = $paymentMethod;
     }
 
     if ($search !== '') {
@@ -57,20 +62,21 @@ try {
     }
 
     $whereSql = implode(' AND ', $where);
+    
+    // Gốc kết nối mới: Xuất phát trực tiếp từ bảng hoadon thay vì thanhtoan
     $baseJoin = "
-        FROM thanhtoan tt
-        JOIN hoadon hd ON hd.MaHoaDon = tt.MaHoaDon
+        FROM hoadon hd
         JOIN phieukham pk ON pk.MaPhieuKham = hd.MaPhieuKham
         JOIN benhnhan bn ON bn.MaBenhNhan = pk.MaBenhNhan
         LEFT JOIN nhanvien nv ON nv.MaNhanVien = pk.MaBacSi
         LEFT JOIN chuyenkhoa ck ON ck.MaChuyenKhoa = pk.MaChuyenKhoa
-        LEFT JOIN phuongthuctt pt ON pt.MaPhuongThuc = tt.MaPhuongThuc
     ";
 
+    // 1. Thống kê tổng quan (Summary)
     $stmt = $pdo->prepare("
         SELECT
-            COALESCE(SUM(tt.SoTien), 0) AS total_revenue,
-            COALESCE(AVG(tt.SoTien), 0) AS avg_payment,
+            COALESCE(SUM(hd.TongThanhToan), 0) AS total_revenue,
+            COALESCE(AVG(hd.TongThanhToan), 0) AS avg_payment,
             COUNT(*) AS total_transactions,
             COUNT(DISTINCT pk.MaBenhNhan) AS total_patients,
             COALESCE(SUM(hd.TongTienCLS), 0) AS total_cls,
@@ -81,32 +87,37 @@ try {
     $stmt->execute($params);
     $summary = $stmt->fetch(PDO::FETCH_ASSOC);
 
+    // 2. Doanh thu theo ngày (Daily revenue)
     $stmt = $pdo->prepare("
-        SELECT DATE(tt.NgayThanhToan) AS date_label, COALESCE(SUM(tt.SoTien), 0) AS revenue, COUNT(*) AS transactions
+        SELECT DATE(hd.NgayThanhToan) AS date_label, 
+               COALESCE(SUM(hd.TongThanhToan), 0) AS revenue, 
+               COUNT(*) AS transactions
         {$baseJoin}
         WHERE {$whereSql}
-        GROUP BY DATE(tt.NgayThanhToan)
+        GROUP BY DATE(hd.NgayThanhToan)
         ORDER BY date_label ASC
     ");
     $stmt->execute($params);
     $dailyRevenue = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+    // 3. Tỷ trọng theo phương thức thanh toán
     $stmt = $pdo->prepare("
-        SELECT COALESCE(pt.TenPhuongThuc, 'Khong xac dinh') AS method_name,
-               tt.MaPhuongThuc,
-               COALESCE(SUM(tt.SoTien), 0) AS revenue,
+        SELECT COALESCE(hd.PhuongThuc, 'Chưa xác định') AS method_name,
+               hd.PhuongThuc AS MaPhuongThuc,
+               COALESCE(SUM(hd.TongThanhToan), 0) AS revenue,
                COUNT(*) AS transactions
         {$baseJoin}
         WHERE {$whereSql}
-        GROUP BY tt.MaPhuongThuc, pt.TenPhuongThuc
+        GROUP BY hd.PhuongThuc
         ORDER BY revenue DESC
     ");
     $stmt->execute($params);
     $paymentStats = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+    // 4. Doanh thu theo chuyên khoa
     $stmt = $pdo->prepare("
-        SELECT COALESCE(ck.TenChuyenKhoa, 'Chua gan khoa') AS specialty,
-               COALESCE(SUM(tt.SoTien), 0) AS revenue,
+        SELECT COALESCE(ck.TenChuyenKhoa, 'Chưa gán khoa') AS specialty,
+               COALESCE(SUM(hd.TongThanhToan), 0) AS revenue,
                COUNT(*) AS transactions
         {$baseJoin}
         WHERE {$whereSql}
@@ -117,21 +128,23 @@ try {
     $stmt->execute($params);
     $specialtyStats = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+    // 5. Phân trang giao dịch
     $countStmt = $pdo->prepare("SELECT COUNT(*) {$baseJoin} WHERE {$whereSql}");
     $countStmt->execute($params);
     $totalRecords = (int) $countStmt->fetchColumn();
 
+    // 6. Lấy danh sách chi tiết các giao dịch hóa đơn
     $sql = "
-        SELECT tt.MaThanhToan, tt.NgayThanhToan, tt.SoTien,
+        SELECT hd.MaHoaDon AS MaThanhToan, hd.NgayThanhToan, hd.TongThanhToan AS SoTien,
                hd.MaHoaDon, hd.SoHoaDon, hd.TongTienCLS, hd.TongTienThuoc, hd.TongThanhToan, hd.TrangThai,
                pk.MaPhieuKhamCode, pk.NgayKham,
                bn.MaBN, bn.HoTen AS TenBenhNhan,
-               COALESCE(nv.HoTen, 'Chua gan') AS TenBacSi,
-               COALESCE(ck.TenChuyenKhoa, 'Chua gan khoa') AS TenChuyenKhoa,
-               COALESCE(pt.TenPhuongThuc, 'Khong xac dinh') AS PhuongThuc
+               COALESCE(nv.HoTen, 'Chưa gán') AS TenBacSi,
+               COALESCE(ck.TenChuyenKhoa, 'Chưa gán khoa') AS TenChuyenKhoa,
+               COALESCE(hd.PhuongThuc, 'Chưa xác định') AS PhuongThuc
         {$baseJoin}
         WHERE {$whereSql}
-        ORDER BY tt.NgayThanhToan DESC, tt.MaThanhToan DESC
+        ORDER BY hd.NgayThanhToan DESC, hd.MaHoaDon DESC
         LIMIT :limit OFFSET :offset
     ";
     $stmt = $pdo->prepare($sql);
@@ -143,7 +156,14 @@ try {
     $stmt->execute();
     $transactions = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    $methodStmt = $pdo->query("SELECT MaPhuongThuc, TenPhuongThuc FROM phuongthuctt ORDER BY MaPhuongThuc ASC");
+    // Danh sách các phương thức thanh toán động có trong bảng hóa đơn để render vào bộ lọc (filter dropdown)
+    $methodStmt = $pdo->query("
+        SELECT DISTINCT PhuongThuc AS MaPhuongThuc, COALESCE(PhuongThuc, 'Chưa xác định') AS TenPhuongThuc 
+        FROM hoadon 
+        WHERE PhuongThuc IS NOT NULL AND PhuongThuc != '' 
+        ORDER BY PhuongThuc ASC
+    ");
+    $paymentMethods = $methodStmt->fetchAll(PDO::FETCH_ASSOC);
 
     report_json(true, [
         'filters' => [
@@ -157,7 +177,7 @@ try {
         'payment_stats' => $paymentStats,
         'specialty_stats' => $specialtyStats,
         'transactions' => $transactions,
-        'payment_methods' => $methodStmt->fetchAll(PDO::FETCH_ASSOC),
+        'payment_methods' => $paymentMethods,
         'pagination' => [
             'page' => $page,
             'limit' => $limit,
@@ -166,5 +186,6 @@ try {
         ]
     ]);
 } catch (Throwable $e) {
-    report_json(false, null, 'Loi lay bao cao: ' . $e->getMessage());
+    report_json(false, null, 'Lỗi lấy báo cáo: ' . $e->getMessage());
 }
+?>

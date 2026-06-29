@@ -350,7 +350,7 @@ function loadPatientProfile() {
                 localProfileData = data;
 
                 document.getElementById('txt-header-fullname').innerText = data.HoTen || 'Chưa cập nhật';
-                document.getElementById('txt-header-code').innerText = data.CCCD || 'Chưa Cập nhật';
+                document.getElementById('txt-header-code').innerText = data.MaBN;
                 document.getElementById('txt-header-username').innerText = data.TenDangNhap;
                 
                 if (data.HoTen) {

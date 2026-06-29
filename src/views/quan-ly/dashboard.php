@@ -46,16 +46,17 @@
             <p>Nhân viên đang hoạt động</p>
             <strong id="stat-staff-active">--</strong>
         </article>
+                <article class="ql-stat-card ql-stat-warn">
+            <span class="material-symbols-outlined">biotech</span>
+            <p>Thuốc đang còn sử dụng</p>
+            <strong id="stat-cls-waiting">--</strong>
+        </article>
         <article class="ql-stat-card ql-stat-warn">
             <span class="material-symbols-outlined">inventory_2</span>
             <p>Thuốc cảnh báo tồn</p>
             <strong id="stat-low-stock">--</strong>
         </article>
-        <article class="ql-stat-card ql-stat-warn">
-            <span class="material-symbols-outlined">biotech</span>
-            <p>CLS chờ thực hiện</p>
-            <strong id="stat-cls-waiting">--</strong>
-        </article>
+
     </div>
 
     <div class="ql-dashboard-grid">
@@ -82,7 +83,7 @@
         <section class="ql-panel">
             <div class="ql-panel-header">
                 <div>
-                    <h2>Phiếu khám mới</h2>
+                    <h2>Phiếu khám hôm nay</h2>
                     <p>Các phiếu vừa được tạo/cập nhật.</p>
                 </div>
             </div>
